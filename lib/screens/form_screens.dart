@@ -1,0 +1,83 @@
+import 'package:flutter/material.dart';
+import 'package:account/models/transaction.dart';
+import 'package:provider/provider.dart';
+import 'package:account/provider/transaction_provider.dart';
+
+class FormScreen extends StatelessWidget {
+  FormScreen({super.key});
+
+  final formKey = GlobalKey<FormState>();
+  final titleController = TextEditingController();
+  final amountController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // ปิดแป้นพิมพ์เมื่อคลิกนอกฟอร์ม
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('แบบฟอร์มข้อมูล'),
+        ),
+        body: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'ชื่อรายการ',
+                ),
+                autofocus: true,
+                controller: titleController,
+                validator: (String? str) {
+                  if (str!.isEmpty) {
+                    return 'กรุณากรอกข้อมูล';
+                  }
+                  return null; // เพิ่ม return null สำหรับกรณีที่ไม่มีข้อผิดพลาด
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'จำนวนเงิน',
+                ),
+                keyboardType: TextInputType.number,
+                controller: amountController,
+                validator: (String? input) {
+                  try {
+                    double amount = double.parse(input!);
+                    if (amount < 0) {
+                      return 'กรุณากรอกข้อมูลมากกว่า 0';
+                    }
+                  } catch (e) {
+                    return 'กรุณากรอกข้อมูลเป็นตัวเลข';
+                  }
+                  return null; // เพิ่ม return null สำหรับกรณีที่ไม่มีข้อผิดพลาด
+                },
+              ),
+              TextButton(
+                child: const Text('บันทึก'),
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    // create transaction data object
+                    var statement = Transactions(
+                      title: titleController.text,
+                      amount: double.parse(amountController.text),
+                      date: DateTime.now(),
+                    );
+
+                    // add transaction data object to provider
+                    var provider = Provider.of<TransactionProvider>(context, listen: false);
+                    provider.addTransaction(statement);
+
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
