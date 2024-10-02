@@ -1,27 +1,34 @@
 import 'package:account/databases/transection_db.dart';
-import 'package:account/models/transaction.dart';
+import 'package:account/models/transaction.dart'; 
 import 'package:flutter/foundation.dart';
 
 class TransactionProvider with ChangeNotifier {
-  List<Transactions> transactions = [
-    Transactions(title: 'หนังสือ', amount: 300, date: DateTime.now()),
-    Transactions(title: 'เสื้อ', amount: 500, date: DateTime.now()),
-    Transactions(title: 'รองเท้า', amount: 1000, date: DateTime.now()),
-  ];
+  List<Transactions> transactions = [];
 
   List<Transactions> getTransaction() {
     return transactions;
   }
 
-  void addTransaction(Transactions transaction) async {
-    var db = TransactionDB(dbName: 'transections.db').openDatabase();
-    print(db);
-    transactions.insert(0,transaction);
+  void initData() async{
+    var db = await TransactionDB(dbName: 'transactions.db');
+    this.transactions = await db.loadAllData();
+    print(this.transactions);
     notifyListeners();
   }
 
-  void deleteTransaction(int index) {
-    transactions.removeAt(index);
+  void addTransaction(Transactions transaction) async{
+    var db = await TransactionDB(dbName: 'transactions.db');
+    var keyID = await db.insertDatabase(transaction);
+    this.transactions = await db.loadAllData();
+    print(this.transactions);
+    notifyListeners();
+  }
+
+  void deleteTransaction(int? index) async{
+    print('delete index: $index');
+    var db = await TransactionDB(dbName: 'transactions.db');
+    await db.deleteDatabase(index);
+    this.transactions = await db.loadAllData();
     notifyListeners(); 
   }
 }

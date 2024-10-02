@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:account/screens/form_screens.dart';
+import 'package:account/screens/home_screens.dart';
 import 'package:provider/provider.dart';
 import 'package:account/provider/transaction_provider.dart';
-import 'package:intl/intl.dart'; // Import this for date formatting
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,6 +12,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -25,16 +27,14 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const MyHomePage(title: 'แอพบัญชี'),
+        home: const MyHomePage(),
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -42,60 +42,35 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return FormScreen();
-              }));
-            },
-          ),
-        ],
-      ),
-      body: Consumer<TransactionProvider>(
-        builder: (context, provider, child) {
-          if (provider.transactions.isEmpty) {
-            return Center(
-              child: Text('ไม่มีรายการ'),
-            );
-          } else {
-            return ListView.builder(
-              itemCount: provider.transactions.length,
-              itemBuilder: (context, index) {
-                final transaction = provider.transactions[index];
-                final formattedDate = DateFormat('dd/MM/yyyy HH:mm:ss').format(transaction.date); // Corrected this line
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<TransactionProvider>(context, listen: false).initData();
+  }
 
-                return Card(
-                  elevation: 5,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: ListTile(
-                    title: Text(transaction.title), // Assuming there's a title property
-                    subtitle: Text('${transaction.amount} - $formattedDate'), // Assuming you have an amount property
-                    leading: CircleAvatar(
-                      radius: 30,
-                      child: FittedBox(
-                        child: Text('${transaction.amount}'), // Use transaction here
-                      ),
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        provider.deleteTransaction(index);//delete
-                      },
-                    ),
-                  ),
-                );
-              },
-            );
-          }
-        },
-      ),
-    );
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          body: TabBarView(
+            children: [
+              HomeScreen(),
+              FormScreen(),
+            ],
+          ),
+          bottomNavigationBar: TabBar(
+            tabs: [
+              Tab(
+                text: "รายการธุรกรรม",
+                icon: Icon(Icons.list),
+              ),
+              Tab(
+                text: "เพิ่มข้อมูล",
+                icon: Icon(Icons.add),
+              ),
+            ],
+          ),
+        ));
   }
 }
