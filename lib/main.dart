@@ -3,7 +3,6 @@ import 'package:account/screens/form_screens.dart';
 import 'package:account/screens/home_screens.dart';
 import 'package:provider/provider.dart';
 import 'package:account/provider/transaction_provider.dart';
-import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,14 +60,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           bottomNavigationBar: TabBar(
             tabs: [
-              Tab(
-                text: "รายการธุรกรรม",
-                icon: Icon(Icons.list),
-              ),
-              Tab(
-                text: "เพิ่มข้อมูล",
-                icon: Icon(Icons.add),
-              ),
+              Tab(text: "รายการธุรกรรม", icon: Icon(Icons.list),),
+              Tab(text: "เพิ่มข้อมูล", icon: Icon(Icons.add),),
             ],
           ),
         ));
