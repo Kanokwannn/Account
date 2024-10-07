@@ -1,10 +1,9 @@
 import 'package:account/main.dart';
 import 'package:account/provider/transaction_provider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:account/models/transaction.dart';
- 
+
 class EditScreen extends StatefulWidget {
  
   Transactions statement;
@@ -64,7 +63,7 @@ class _EditScreenState extends State<EditScreen> {
                   },
                 ),
                 TextButton(
-                    child: const Text('บันทึกข้อมูล'),
+                    child: const Text('แก้ไขข้อมูล'),
                     onPressed: () {
                           if (formKey.currentState!.validate())
                             {

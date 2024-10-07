@@ -5,7 +5,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 
-
 class TransactionDB{
   String dbName;
 
@@ -53,7 +52,6 @@ class TransactionDB{
     var store = intMapStoreFactory.store('expense');
     await store.delete(db, finder: Finder(filter: Filter.equals(Field.key, index)));
   }
-
   updateDatabase(Transactions statement) async{
     var db = await this.openDatabase();
     var store = intMapStoreFactory.store('expense');
